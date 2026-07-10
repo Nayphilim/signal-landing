@@ -2,24 +2,33 @@
 
 > Ship infrastructure your developers won't hate.
 
-A concept client site — part of the [Nathan AI Solutions](https://github.com/Nayphilim) portfolio,
-showcasing a production-quality build in a specific modern stack.
+A concept developer-platform landing page — part of the
+[Nathan AI Solutions](https://github.com/Nayphilim) portfolio, showcasing a production-quality
+build in a specific modern stack.
 
-**Stack:** Astro 5 + MDX
+**Stack:** Astro 7 (static-first + islands), content collections, TypeScript.
 
 ## About
 
-An agent-native developer-platform landing page — animated terminal, feature tabs, a seat-based pricing estimator, and an MDX changelog. Static-first with islands of interactivity.
+An agent-native developer-platform landing page. Static-rendered by Astro, with small islands of
+vanilla-TS interactivity: a typewriter terminal + cycling deploy status, feature tabs, an
+auto-playing "your agent sets it up" transcript, a monthly/yearly billing toggle, and a seat-count
+pricing estimator. The changelog is driven by an Astro content collection.
 
-## Status
+## Develop
 
-🚧 **In progress.** This repository is initialised; the full build lands in its portfolio
-phase. The live demo will be linked here once deployed.
+```bash
+npm install
+make dev      # dev server (http://localhost:4321)
+make lint     # astro check + prettier
+make test     # vitest (pricing maths)
+make build    # static build → dist/
+```
 
 ## Notes
 
-- The brand, copy, and imagery are fictional concept work created for portfolio purposes.
-- Any photography is used under the Unsplash license and credited in `CREDITS.md`.
+- Brand, copy, and imagery are fictional concept work for portfolio purposes; not a real product.
+- No photography — the UI is pure CSS.
 
 ## License
 

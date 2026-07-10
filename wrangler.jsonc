@@ -1,0 +1,9 @@
+{
+  // Cloudflare Workers static-assets deploy (see the portfolio's docs/01-infrastructure.md).
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "signal",
+  "compatibility_date": "2025-07-01",
+  "assets": {
+    "directory": "./dist",
+  },
+}
