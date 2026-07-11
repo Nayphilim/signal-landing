@@ -56,6 +56,10 @@ input::placeholder {
   margin: 0 auto;
 }
 
+.wrap {
+  padding-inline: max(40px, calc((100% - 1180px) / 2)) !important;
+}
+
 .kicker {
   font-family: var(--font-mono);
   font-size: 12px;
