@@ -1,0 +1,919 @@
+---
+import Base from "../layouts/Base.astro";
+import { getCollection } from "astro:content";
+import { estimate, teamPrice } from "../lib/pricing";
+
+const changelog = (await getCollection("changelog")).sort((a, b) =>
+  a.data.date < b.data.date ? 1 : -1,
+);
+
+const tabs = [
+  {
+    label: "deploy",
+    title: "Zero-config deploys",
+    body: "Placeholder feature copy. Push to main and the platform handles builds, rollouts, and rollbacks — no YAML required.",
+    points: [
+      "Preview environments per branch",
+      "Instant rollback to any release",
+      "Build cache shared across the team",
+    ],
+    shot: "deploy pipeline UI screenshot",
+  },
+  {
+    label: "observe",
+    title: "Observability built in",
+    body: "Placeholder feature copy. Traces, logs, and metrics for every request out of the box, correlated automatically.",
+    points: [
+      "Distributed tracing, zero setup",
+      "Alerting on p99 regressions",
+      "Log search across all services",
+    ],
+    shot: "tracing / metrics UI screenshot",
+  },
+  {
+    label: "scale",
+    title: "Scale without thinking",
+    body: "Placeholder feature copy. Autoscaling that reacts in seconds, with per-request billing so idle time costs nothing.",
+    points: [
+      "Scale to zero between requests",
+      "Regional failover by default",
+      "Cost breakdown per service",
+    ],
+    shot: "scaling dashboard screenshot",
+  },
+];
+
+const caps = [
+  { no: "01", name: "Edge network", body: "Placeholder line about global points of presence." },
+  { no: "02", name: "Secrets & config", body: "Placeholder line about environment management." },
+  { no: "03", name: "Access control", body: "Placeholder line about roles and audit logs." },
+  { no: "04", name: "CLI & API", body: "Placeholder line about automation surface." },
+];
+
+const plans = [
+  {
+    name: "HOBBY",
+    price: "$0",
+    per: "forever",
+    blurb: "For side projects and evaluation.",
+    popular: false,
+    feats: ["1 developer", "Scale-to-zero included", "Community support"],
+    cta: "Start free",
+    primary: false,
+  },
+  {
+    name: "TEAM",
+    per: "per dev / mo",
+    blurb: "For product teams shipping daily.",
+    popular: true,
+    feats: ["Unlimited services", "Preview environments", "Tracing + alerting", "Email support"],
+    cta: "Start 14-day trial",
+    primary: true,
+  },
+  {
+    name: "ENTERPRISE",
+    price: "Custom",
+    per: "annual",
+    blurb: "For platform teams with compliance needs.",
+    popular: false,
+    feats: ["SSO / SCIM", "Dedicated regions", "SLA + support engineer", "Audit log export"],
+    cta: "Talk to sales",
+    primary: false,
+  },
+];
+
+const initYearly = true;
+const initSeats = 25;
+---
+
+<Base>
+  <!-- NAV -->
+  <nav
+    style="display:flex;align-items:center;justify-content:space-between;padding:14px 40px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:40;background:rgba(13,14,18,0.85);backdrop-filter:blur(12px)"
+  >
+    <a
+      href="#top"
+      style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit"
+    >
+      <div style="width:24px;height:24px;border-radius:6px;background:var(--violet)"></div>
+      <span style="font-size:16px;font-weight:600;letter-spacing:-0.01em"
+        >product<span style="color:var(--violet-lt)">_</span></span
+      >
+    </a>
+    <div style="display:flex;gap:26px" class="nav-links">
+      <a href="#features" class="navlink" style="text-decoration:none">Features</a>
+      <a
+        href="#agents"
+        class="navlink"
+        style="text-decoration:none;display:flex;gap:6px;align-items:center"
+        >Agents <span class="pill">NEW</span></a
+      >
+      <a href="#pricing" class="navlink" style="text-decoration:none">Pricing</a>
+      <a href="#changelog" class="navlink" style="text-decoration:none">Changelog</a>
+      <span class="navlink">Docs</span>
+    </div>
+    <div style="display:flex;gap:14px;align-items:center;font-size:14px;font-weight:500">
+      <span class="mono" style="color:var(--muted);font-size:13px">v4.2.0</span>
+      <button class="btn-primary" style="background:var(--text);color:var(--bg);padding:9px 18px"
+        >Get started</button
+      >
+    </div>
+  </nav>
+
+  <main id="top">
+    <!-- HERO -->
+    <section
+      class="hero-grid wrap"
+      style="display:grid;grid-template-columns:1.1fr 1fr;gap:40px;padding:72px 40px 64px;position:relative;overflow:hidden;border-bottom:1px solid var(--line)"
+    >
+      <div
+        style="position:absolute;top:-140px;right:-80px;width:560px;height:560px;background:radial-gradient(circle,oklch(0.45 0.18 295 / 0.22),transparent 65%);pointer-events:none"
+      >
+      </div>
+      <div
+        style="display:flex;flex-direction:column;gap:24px;justify-content:center;animation:riseIn 0.6s cubic-bezier(0.16,1,0.3,1) both"
+      >
+        <div
+          class="mono"
+          style="font-size:12px;color:var(--violet-lt);display:flex;gap:10px;align-items:center"
+        >
+          <span
+            style="background:oklch(0.6 0.2 295 / 0.12);border:1px solid oklch(0.6 0.2 295 / 0.3);padding:4px 10px;border-radius:999px"
+            >v4.2 — placeholder release note</span
+          >
+        </div>
+        <h1
+          style="font-size:56px;line-height:1.06;font-weight:600;letter-spacing:-0.03em;text-wrap:balance"
+        >
+          Ship infrastructure your developers won't hate
+        </h1>
+        <p style="font-size:16px;line-height:1.65;color:var(--muted);max-width:44ch">
+          Placeholder pitch. Technical audience, benefit-first, no fluff. Two sentences maximum.
+        </p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <a href="#pricing" class="btn-primary" style="text-decoration:none;display:inline-block"
+            >Start building →</a
+          >
+          <button
+            class="mono"
+            data-copy="npm install product"
+            data-toast="Copied to clipboard"
+            style="border:1px solid var(--line2);font-size:13px;padding:14px 22px;border-radius:7px;color:var(--muted);cursor:pointer;display:flex;gap:10px;align-items:center;background:none"
+          >
+            <span style="color:var(--violet-lt)">$</span> npm install product <span
+              style="color:var(--dim)">⧉</span
+            >
+          </button>
+        </div>
+        <div
+          class="mono"
+          style="display:flex;gap:24px;font-size:12px;color:var(--dim);margin-top:4px;flex-wrap:wrap"
+        >
+          <span>99.99% uptime</span><span>·</span><span>&lt;40ms p99</span><span>·</span><span
+            >SOC 2 Type II</span
+          >
+        </div>
+      </div>
+      <div
+        class="panel"
+        style="overflow:hidden;height:fit-content;align-self:center;animation:riseIn 0.6s cubic-bezier(0.16,1,0.3,1) 0.15s both;box-shadow:0 24px 80px rgba(0,0,0,0.4)"
+      >
+        <div
+          style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line)"
+        >
+          <div style="display:flex;gap:6px">
+            <div style="width:10px;height:10px;border-radius:50%;background:var(--line2)"></div>
+            <div style="width:10px;height:10px;border-radius:50%;background:var(--line2)"></div>
+            <div style="width:10px;height:10px;border-radius:50%;background:var(--line2)"></div>
+          </div>
+          <span class="mono" style="font-size:11px;color:var(--dim)">deploy.ts</span>
+        </div>
+        <div
+          id="term"
+          class="mono"
+          style="padding:20px;font-size:13px;line-height:1.85;min-height:230px;white-space:pre-wrap"
+        >
+        </div>
+        <div
+          style="border-top:1px solid var(--line);padding:12px 16px;display:flex;justify-content:space-between;align-items:center"
+          class="mono"
+        >
+          <span
+            id="deploy-status"
+            style="font-size:11px;display:flex;gap:8px;align-items:center;color:var(--dim)"
+            ><span
+              id="deploy-dot"
+              style="width:7px;height:7px;border-radius:50%;background:var(--dim);animation:pulse 1.4s ease infinite"
+            ></span>waiting for input…</span
+          >
+          <span style="font-size:11px;color:var(--dim)">eu-west · auto-scale</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- LOGO MARQUEE -->
+    <div style="border-bottom:1px solid var(--line);overflow:hidden;padding:20px 0">
+      <div
+        style="display:flex;gap:56px;white-space:nowrap;width:max-content;animation:marquee 26s linear infinite;font-size:15px;font-weight:700;color:#3c3f4c;align-items:center"
+      >
+        {
+          [
+            "logo one",
+            "logo two",
+            "logo three",
+            "logo four",
+            "logo five",
+            "logo six",
+            "logo one",
+            "logo two",
+            "logo three",
+            "logo four",
+            "logo five",
+            "logo six",
+          ].map((l) => <span>{l}</span>)
+        }
+      </div>
+    </div>
+
+    <!-- FEATURES -->
+    <section id="features" class="section">
+      <div class="container">
+        <div class="kicker">// FEATURES</div>
+        <h2
+          style="margin-bottom:36px;font-size:36px;font-weight:600;letter-spacing:-0.02em;max-width:24ch"
+        >
+          Everything between your code and production
+        </h2>
+        <div style="display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap">
+          {
+            tabs.map((t, i) => (
+              <button
+                class="mono feature-tab"
+                data-tab={i}
+                data-active={i === 0 ? "true" : "false"}
+                style="font-size:13px;padding:11px 20px;border-radius:7px;cursor:pointer;background:transparent;color:var(--muted);border:1px solid var(--line2)"
+              >
+                {t.label}
+              </button>
+            ))
+          }
+        </div>
+        <div
+          class="feature-panel panel"
+          style="display:grid;grid-template-columns:1fr 1.4fr;gap:32px;overflow:hidden"
+        >
+          <div
+            style="padding:36px;display:flex;flex-direction:column;gap:16px;justify-content:center"
+          >
+            <h3 id="tab-title" style="font-size:22px;font-weight:600;letter-spacing:-0.01em">
+              {tabs[0].title}
+            </h3>
+            <p id="tab-body" style="font-size:14px;line-height:1.7;color:var(--muted)">
+              {tabs[0].body}
+            </p>
+            <div id="tab-points" style="display:flex;flex-direction:column;gap:10px;margin-top:6px">
+              {
+                tabs[0].points.map((pt) => (
+                  <div style="display:flex;gap:10px;font-size:13px;color:var(--text-dim);align-items:baseline">
+                    <span class="mono" style="color:var(--green)">
+                      ✓
+                    </span>
+                    {pt}
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+          <div class="shot" style="min-height:320px;border-left:1px solid var(--line)">
+            <span id="tab-shot">{tabs[0].shot}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CAPABILITIES -->
+    <div
+      class="caps-grid wrap"
+      style="display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--line)"
+    >
+      {
+        caps.map((c) => (
+          <div style="padding:28px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:10px">
+            <div class="mono" style="font-size:11px;color:var(--violet-lt)">
+              {c.no}
+            </div>
+            <div style="font-size:15px;font-weight:600">{c.name}</div>
+            <div style="font-size:13px;line-height:1.6;color:var(--muted)">{c.body}</div>
+          </div>
+        ))
+      }
+    </div>
+
+    <!-- AGENT-NATIVE -->
+    <section id="agents" class="section" style="position:relative;overflow:hidden">
+      <div
+        style="position:absolute;top:-160px;left:-120px;width:520px;height:520px;background:radial-gradient(circle,oklch(0.5 0.12 150 / 0.12),transparent 65%);pointer-events:none"
+      >
+      </div>
+      <div class="container" style="position:relative">
+        <div class="kicker" style="color:var(--green)">// AGENT-NATIVE</div>
+        <div
+          style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:36px"
+        >
+          <h2 style="font-size:36px;font-weight:600;letter-spacing:-0.02em;max-width:22ch">
+            Don't set it up. Tell your agent to.
+          </h2>
+          <p style="font-size:14px;line-height:1.65;color:var(--muted);max-width:44ch">
+            First-class support for coding agents and LLMs — an MCP server, agent-readable docs, and
+            a one-paste prompt that gets you from zero to deployed.
+          </p>
+        </div>
+        <div
+          class="agent-grid"
+          style="display:grid;grid-template-columns:1fr 1.2fr;gap:24px;align-items:start"
+        >
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div class="panel" style="overflow:hidden">
+              <div
+                style="display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line)"
+              >
+                <span class="mono" style="font-size:11px;color:var(--dim)"
+                  >PASTE INTO YOUR AGENT</span
+                >
+                <span
+                  class="mono"
+                  data-copy="Set up product_ in this repo: install the SDK, create a service from my existing server, and deploy a preview. Docs: product.dev/llms.txt"
+                  data-toast="Agent prompt copied"
+                  style="font-size:11px;color:var(--violet-lt);cursor:pointer">copy ⧉</span
+                >
+              </div>
+              <div
+                class="mono"
+                style="padding:18px;font-size:12.5px;line-height:1.7;color:var(--text-dim)"
+              >
+                Set up product_ in this repo: install the SDK, create a service from my existing
+                server, and deploy a preview. Docs: product.dev/llms.txt
+              </div>
+            </div>
+            <div class="panel" style="overflow:hidden">
+              <div
+                style="display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line)"
+              >
+                <span class="mono" style="font-size:11px;color:var(--dim)">MCP SERVER</span>
+                <span
+                  class="mono"
+                  data-copy="npx @product/mcp install"
+                  data-toast="MCP install command copied"
+                  style="font-size:11px;color:var(--violet-lt);cursor:pointer">copy ⧉</span
+                >
+              </div>
+              <div class="mono" style="padding:18px;font-size:12.5px;line-height:1.7">
+                <span style="color:var(--violet-lt)">$</span>
+                <span style="color:var(--text-dim)">npx @product/mcp install</span>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+              <div class="panel" style="padding:18px;display:flex;flex-direction:column;gap:6px">
+                <span class="mono" style="font-size:12px;color:var(--green)">llms.txt</span>
+                <span style="font-size:12.5px;line-height:1.55;color:var(--muted)"
+                  >Full docs in one agent-readable file, always current.</span
+                >
+              </div>
+              <div class="panel" style="padding:18px;display:flex;flex-direction:column;gap:6px">
+                <span class="mono" style="font-size:12px;color:var(--green)">scoped tokens</span>
+                <span style="font-size:12.5px;line-height:1.55;color:var(--muted)"
+                  >Agents get least-privilege keys that expire automatically.</span
+                >
+              </div>
+            </div>
+          </div>
+          <div class="panel" style="overflow:hidden">
+            <div
+              style="display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line)"
+            >
+              <span class="mono" style="font-size:11px;color:var(--dim)"
+                >YOUR AGENT · SETTING UP PRODUCT_</span
+              >
+              <button
+                id="agent-replay"
+                class="mono"
+                style="font-size:11px;color:var(--dim);cursor:pointer;background:none;border:none"
+                >replay ↻</button
+              >
+            </div>
+            <div
+              style="padding:20px 22px;display:flex;flex-direction:column;gap:14px;min-height:300px"
+            >
+              <div
+                style="align-self:flex-end;background:var(--line);border-radius:10px 10px 2px 10px;padding:12px 16px;font-size:13px;line-height:1.6;color:var(--text-dim);max-width:75%"
+              >
+                Set up product_ in this repo and deploy a preview
+              </div>
+              <div id="agent-steps" style="display:flex;flex-direction:column;gap:14px"></div>
+              <div
+                id="agent-done"
+                style="align-self:flex-start;background:oklch(0.5 0.12 150 / 0.12);border:1px solid oklch(0.5 0.12 150 / 0.3);border-radius:10px 10px 10px 2px;padding:12px 16px;font-size:13px;line-height:1.6;color:var(--text-dim);max-width:80%;display:none"
+              >
+                Done — preview is live at <span style="color:var(--green);text-decoration:underline"
+                  >preview-a1b2.product.dev</span
+                >. Scoped token expires in 1h.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRICING -->
+    <section id="pricing" class="section">
+      <div class="container">
+        <div class="kicker">// PRICING</div>
+        <div
+          style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:36px;gap:24px;flex-wrap:wrap"
+        >
+          <h2 style="font-size:36px;font-weight:600;letter-spacing:-0.02em">
+            Pay for what you ship
+          </h2>
+          <div style="display:flex;align-items:center;gap:14px">
+            <span id="label-monthly" style="font-size:13px;cursor:pointer;color:var(--dim)"
+              >Monthly</span
+            >
+            <button
+              id="billing-toggle"
+              aria-label="Toggle billing period"
+              style="width:44px;height:24px;border-radius:999px;background:var(--violet);position:relative;cursor:pointer;transition:background 0.2s;border:none;padding:0"
+            >
+              <span
+                id="billing-knob"
+                style="position:absolute;top:3px;left:23px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left 0.2s"
+              ></span>
+            </button>
+            <span id="label-yearly" style="font-size:13px;cursor:pointer;color:var(--text)"
+              >Yearly <span class="mono" style="color:var(--green);font-size:11px">−20%</span></span
+            >
+          </div>
+        </div>
+        <div
+          class="plans-grid"
+          style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:stretch"
+        >
+          {
+            plans.map((p) => (
+              <div
+                class="panel"
+                style={`padding:30px;display:flex;flex-direction:column;gap:18px;position:relative;${p.primary ? "border-color:oklch(0.6 0.2 295 / 0.5)" : "background:transparent"}`}
+              >
+                {p.popular && (
+                  <span
+                    class="mono"
+                    style="position:absolute;top:-11px;left:30px;background:var(--violet);color:#fff;font-size:10px;letter-spacing:0.08em;padding:4px 10px;border-radius:999px"
+                  >
+                    MOST POPULAR
+                  </span>
+                )}
+                <div class="mono" style="font-size:12px;color:var(--muted)">
+                  {p.name}
+                </div>
+                <div style="display:flex;align-items:baseline;gap:6px">
+                  <span
+                    style="font-size:40px;font-weight:600;letter-spacing:-0.02em"
+                    data-team-price={p.primary ? "true" : undefined}
+                  >
+                    {p.primary ? `$${teamPrice(initYearly)}` : p.price}
+                  </span>
+                  <span style="font-size:13px;color:var(--dim)">{p.per}</span>
+                </div>
+                <div style="font-size:13px;line-height:1.6;color:var(--muted)">{p.blurb}</div>
+                <div style="display:flex;flex-direction:column;gap:9px;flex:1">
+                  {p.feats.map((f) => (
+                    <div style="display:flex;gap:9px;font-size:13px;color:var(--text-dim);align-items:baseline">
+                      <span class="mono" style="color:var(--green)">
+                        ✓
+                      </span>
+                      {f}
+                    </div>
+                  ))}
+                </div>
+                <button
+                  class={p.primary ? "btn-primary" : "btn-ghost"}
+                  style="width:100%;padding:13px"
+                >
+                  {p.cta}
+                </button>
+              </div>
+            ))
+          }
+        </div>
+        <div
+          class="panel"
+          style="margin-top:24px;padding:24px 30px;display:flex;align-items:center;gap:36px;flex-wrap:wrap"
+        >
+          <div style="display:flex;flex-direction:column;gap:6px;min-width:200px">
+            <span style="font-size:14px;font-weight:600">Estimate your bill</span>
+            <span id="seats-label" class="mono" style="font-size:12px;color:var(--dim)"
+              >{initSeats} developers</span
+            >
+          </div>
+          <input
+            id="seats"
+            type="range"
+            min="1"
+            max="200"
+            value={initSeats}
+            style="flex:1;accent-color:var(--violet);min-width:200px"
+          />
+          <div style="display:flex;flex-direction:column;gap:2px;text-align:right">
+            <span
+              id="estimate"
+              style="font-size:26px;font-weight:600;letter-spacing:-0.01em;color:var(--violet-lt)"
+              >${estimate(initSeats, initYearly).toLocaleString()}/mo</span
+            >
+            <span id="estimate-note" class="mono" style="font-size:11px;color:var(--dim)"
+              >$19/dev · billed yearly</span
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHANGELOG -->
+    <section id="changelog" class="section">
+      <div class="container">
+        <div class="kicker">// CHANGELOG</div>
+        <h2 style="margin-bottom:32px;font-size:36px;font-weight:600;letter-spacing:-0.02em">
+          Shipped weekly, documented always
+        </h2>
+        <div style="display:flex;flex-direction:column">
+          {
+            changelog.map((l) => {
+              const tagColor =
+                l.data.tag === "NEW"
+                  ? "var(--green)"
+                  : l.data.tag === "IMPROVED"
+                    ? "var(--violet-lt)"
+                    : "var(--muted)";
+              return (
+                <div style="display:grid;grid-template-columns:130px 90px 1fr auto;gap:20px;align-items:baseline;padding:18px 0;border-bottom:1px solid var(--line)">
+                  <span class="mono" style="font-size:12px;color:var(--dim)">
+                    {l.data.date}
+                  </span>
+                  <span
+                    class="mono"
+                    style={`font-size:11px;color:${tagColor};border:1px solid ${tagColor};padding:3px 8px;border-radius:999px;text-align:center`}
+                  >
+                    {l.data.tag}
+                  </span>
+                  <span style="font-size:14px;font-weight:500">{l.data.title}</span>
+                  <span class="mono" style="font-size:12px;color:var(--dim)">
+                    →
+                  </span>
+                </div>
+              );
+            })
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <div
+      class="section wrap"
+      style="padding:88px 40px;display:flex;flex-direction:column;align-items:center;gap:20px;text-align:center;position:relative;overflow:hidden"
+    >
+      <div
+        style="position:absolute;bottom:-200px;left:50%;transform:translateX(-50%);width:640px;height:400px;background:radial-gradient(ellipse,oklch(0.45 0.18 295 / 0.28),transparent 65%);pointer-events:none"
+      >
+      </div>
+      <h2
+        style="font-size:44px;font-weight:600;letter-spacing:-0.03em;max-width:20ch;text-wrap:balance;position:relative"
+      >
+        Your first deploy is 90 seconds away
+      </h2>
+      <div style="display:flex;gap:12px;position:relative;flex-wrap:wrap;justify-content:center">
+        <button class="btn-primary">Start free →</button>
+        <button class="btn-ghost">Talk to an engineer</button>
+      </div>
+      <span class="mono" style="font-size:12px;color:var(--dim);position:relative"
+        >free tier · no credit card · placeholder terms</span
+      >
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer
+    style="padding:36px 40px;display:flex;justify-content:space-between;align-items:flex-start;background:var(--bg-deep);flex-wrap:wrap;gap:24px"
+  >
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:20px;height:20px;border-radius:5px;background:var(--violet)"></div>
+        <span style="font-size:14px;font-weight:600"
+          >product<span style="color:var(--violet-lt)">_</span></span
+        >
+      </div>
+      <div class="mono" style="font-size:11px;color:var(--dim);max-width:38ch;line-height:1.5">
+        Concept mockup — placeholder brand for portfolio demonstration. Not a real product.
+      </div>
+    </div>
+    <div style="display:flex;gap:56px;font-size:13px;flex-wrap:wrap">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <span style="font-weight:600">Product</span><a
+          href="#features"
+          class="navlink"
+          style="text-decoration:none">Features</a
+        ><a href="#pricing" class="navlink" style="text-decoration:none">Pricing</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <span style="font-weight:600">Company</span><span style="color:var(--muted)">About</span
+        ><span style="color:var(--muted)">Careers</span>
+      </div>
+    </div>
+  </footer>
+
+  <div
+    id="toast"
+    style="position:fixed;bottom:28px;left:50%;transform:translateX(-50%);z-index:200;background:var(--text);color:var(--bg);font-size:13px;font-weight:600;padding:12px 22px;border-radius:8px;display:none;gap:10px;align-items:center;box-shadow:0 8px 24px rgba(0,0,0,0.5)"
+  >
+    <span style="color:oklch(0.55 0.12 150)">✓</span><span id="toast-msg"></span>
+  </div>
+</Base>
+
+<script>
+  import { estimate, teamPrice } from "../lib/pricing";
+  import { prefersReducedMotion } from "../lib/motion";
+
+  const $ = <T extends HTMLElement>(sel: string) => document.querySelector<T>(sel);
+
+  // ---- toast + copy buttons ----
+  let toastTimer: ReturnType<typeof setTimeout>;
+  function showToast(msg: string) {
+    const toast = $("#toast");
+    const msgEl = $("#toast-msg");
+    if (!toast || !msgEl) return;
+    msgEl.textContent = msg;
+    toast.style.display = "flex";
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => (toast.style.display = "none"), 2200);
+  }
+  document.querySelectorAll<HTMLElement>("[data-copy]").forEach((el) => {
+    el.addEventListener("click", () => {
+      navigator.clipboard?.writeText(el.dataset.copy ?? "").catch(() => {});
+      showToast(el.dataset.toast ?? "Copied");
+    });
+  });
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      const toast = $("#toast");
+      if (toast) toast.style.display = "none";
+    }
+  });
+
+  // ---- terminal typewriter + deploy status ----
+  const termScript = [
+    { text: "// placeholder deploy flow", color: "var(--dim)" },
+    { text: "import { client } from '@product/sdk'", color: "var(--text-dim)" },
+    { text: "", color: "var(--text-dim)" },
+    { text: "const app = client.init({", color: "var(--text-dim)" },
+    { text: "  region: 'eu-west',", color: "var(--text-dim)" },
+    { text: "  scale: 'auto'", color: "var(--text-dim)" },
+    { text: "})", color: "var(--text-dim)" },
+    { text: "", color: "var(--text-dim)" },
+    { text: "await app.deploy()", color: "var(--text-dim)" },
+  ];
+  const total = termScript.reduce((n, l) => n + l.text.length + 1, 0);
+  const term = $("#term");
+  const deployStatus = $("#deploy-status");
+  const deployDot = $("#deploy-dot");
+  const phases = [
+    { label: "deploying — building image…", color: "oklch(0.75 0.1 60)" },
+    { label: "deploying — routing traffic…", color: "oklch(0.7 0.16 295)" },
+    { label: "live — deployed in 1.2s", color: "oklch(0.75 0.12 150)" },
+  ];
+  function renderTerm(typed: number) {
+    if (!term) return;
+    let remaining = typed;
+    term.innerHTML = "";
+    for (const l of termScript) {
+      if (remaining <= 0) break;
+      const take = Math.min(l.text.length, remaining);
+      const div = document.createElement("div");
+      div.style.color = l.color;
+      div.style.minHeight = "1.85em";
+      div.textContent = l.text.slice(0, take);
+      term.appendChild(div);
+      remaining -= l.text.length + 1;
+    }
+    const caret = document.createElement("span");
+    caret.textContent = "▍";
+    caret.style.color = "var(--violet-lt)";
+    caret.style.animation = "blink 1s step-end infinite";
+    term.appendChild(caret);
+  }
+  function setDeploy(label: string, color: string) {
+    if (deployStatus) deployStatus.style.color = color;
+    if (deployDot) deployDot.style.background = color;
+    if (deployStatus) {
+      const textNode = deployStatus.childNodes[1];
+      if (textNode) textNode.textContent = label;
+    }
+  }
+  if (prefersReducedMotion()) {
+    renderTerm(total);
+    setDeploy(phases[2].label, phases[2].color);
+  } else {
+    let typed = 0;
+    renderTerm(0);
+    const typer = setInterval(() => {
+      typed += 2;
+      renderTerm(Math.min(typed, total));
+      if (typed >= total) {
+        clearInterval(typer);
+        let phase = 0;
+        setDeploy(phases[0].label, phases[0].color);
+        setInterval(() => {
+          phase = (phase + 1) % 3;
+          setDeploy(phases[phase].label, phases[phase].color);
+        }, 2600);
+      }
+    }, 35);
+  }
+
+  // ---- feature tabs ----
+  const tabData = [
+    {
+      title: "Zero-config deploys",
+      body: "Placeholder feature copy. Push to main and the platform handles builds, rollouts, and rollbacks — no YAML required.",
+      points: [
+        "Preview environments per branch",
+        "Instant rollback to any release",
+        "Build cache shared across the team",
+      ],
+      shot: "deploy pipeline UI screenshot",
+    },
+    {
+      title: "Observability built in",
+      body: "Placeholder feature copy. Traces, logs, and metrics for every request out of the box, correlated automatically.",
+      points: [
+        "Distributed tracing, zero setup",
+        "Alerting on p99 regressions",
+        "Log search across all services",
+      ],
+      shot: "tracing / metrics UI screenshot",
+    },
+    {
+      title: "Scale without thinking",
+      body: "Placeholder feature copy. Autoscaling that reacts in seconds, with per-request billing so idle time costs nothing.",
+      points: [
+        "Scale to zero between requests",
+        "Regional failover by default",
+        "Cost breakdown per service",
+      ],
+      shot: "scaling dashboard screenshot",
+    },
+  ];
+  function paintTab(active: HTMLElement) {
+    document.querySelectorAll<HTMLElement>(".feature-tab").forEach((b) => {
+      const on = b === active;
+      b.dataset.active = on ? "true" : "false";
+      b.style.background = on ? "oklch(0.6 0.2 295 / 0.15)" : "transparent";
+      b.style.color = on ? "oklch(0.7 0.16 295)" : "var(--muted)";
+      b.style.border = `1px solid ${on ? "oklch(0.6 0.2 295 / 0.4)" : "var(--line2)"}`;
+    });
+  }
+  document.querySelectorAll<HTMLElement>(".feature-tab").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const i = Number(btn.dataset.tab);
+      const d = tabData[i];
+      paintTab(btn);
+      const t = $("#tab-title"),
+        b = $("#tab-body"),
+        shot = $("#tab-shot"),
+        pts = $("#tab-points");
+      if (t) t.textContent = d.title;
+      if (b) b.textContent = d.body;
+      if (shot) shot.textContent = d.shot;
+      if (pts)
+        pts.innerHTML = d.points
+          .map(
+            (p) =>
+              `<div style="display:flex;gap:10px;font-size:13px;color:var(--text-dim);align-items:baseline"><span class="mono" style="color:var(--green)">✓</span>${p}</div>`,
+          )
+          .join("");
+    });
+  });
+
+  // ---- agent chat replay ----
+  const agentSteps = [
+    {
+      icon: "›",
+      iconColor: "var(--dim)",
+      text: "Reading product.dev/llms.txt",
+      sub: "",
+      color: "var(--muted)",
+    },
+    {
+      icon: "$",
+      iconColor: "var(--violet-lt)",
+      text: "npm install @product/sdk",
+      sub: "added 1 package in 0.8s",
+      color: "var(--text-dim)",
+    },
+    {
+      icon: "›",
+      iconColor: "var(--dim)",
+      text: "Detected Express server in src/index.ts",
+      sub: "generated product.config.ts",
+      color: "var(--muted)",
+    },
+    {
+      icon: "$",
+      iconColor: "var(--violet-lt)",
+      text: "product deploy --preview",
+      sub: "building image · routing traffic",
+      color: "var(--text-dim)",
+    },
+    {
+      icon: "✓",
+      iconColor: "var(--green)",
+      text: "Deployed in 1.4s",
+      sub: "",
+      color: "var(--green)",
+    },
+  ];
+  const stepsEl = $("#agent-steps");
+  const doneEl = $("#agent-done");
+  let agentTimer: ReturnType<typeof setInterval>;
+  function stepMarkup(st: (typeof agentSteps)[number]) {
+    const sub = st.sub
+      ? `<span class="mono" style="font-size:11px;color:var(--dim)">${st.sub}</span>`
+      : "";
+    return `<div style="display:flex;gap:12px;align-items:baseline;animation:riseIn 0.35s cubic-bezier(0.16,1,0.3,1) both"><span class="mono" style="font-size:12px;color:${st.iconColor};width:14px;flex:none">${st.icon}</span><div style="display:flex;flex-direction:column;gap:3px"><span class="mono" style="font-size:12.5px;color:${st.color}">${st.text}</span>${sub}</div></div>`;
+  }
+  function runAgent() {
+    if (!stepsEl || !doneEl) return;
+    clearInterval(agentTimer);
+    stepsEl.innerHTML = "";
+    doneEl.style.display = "none";
+    let n = 0;
+    const tick = () => {
+      if (n < agentSteps.length) {
+        stepsEl.insertAdjacentHTML("beforeend", stepMarkup(agentSteps[n]));
+        n++;
+      } else {
+        doneEl.style.display = "block";
+        clearInterval(agentTimer);
+      }
+    };
+    if (prefersReducedMotion()) {
+      agentSteps.forEach((st) => stepsEl.insertAdjacentHTML("beforeend", stepMarkup(st)));
+      doneEl.style.display = "block";
+    } else {
+      tick();
+      agentTimer = setInterval(tick, 1400);
+    }
+  }
+  $("#agent-replay")?.addEventListener("click", runAgent);
+  runAgent();
+
+  // ---- pricing toggle + slider ----
+  let yearly = true;
+  const knob = $("#billing-knob");
+  const toggle = $("#billing-toggle");
+  const seats = $<HTMLInputElement>("#seats");
+  function paintEstimate() {
+    const n = Number(seats?.value ?? 25);
+    const est = $("#estimate"),
+      label = $("#seats-label"),
+      note = $("#estimate-note");
+    if (est) est.textContent = `$${estimate(n, yearly).toLocaleString()}/mo`;
+    if (label) label.textContent = `${n} developers`;
+    const perSeat = n > 100 ? 15 : n > 25 ? 19 : 24;
+    if (note)
+      note.textContent = `$${Math.round(perSeat * (yearly ? 0.8 : 1))}/dev · ${yearly ? "billed yearly" : "billed monthly"}`;
+  }
+  function paintBilling() {
+    if (toggle) toggle.style.background = yearly ? "var(--violet)" : "var(--line2)";
+    if (knob) knob.style.left = yearly ? "23px" : "3px";
+    const mo = $("#label-monthly"),
+      yr = $("#label-yearly");
+    if (mo) mo.style.color = yearly ? "var(--dim)" : "var(--text)";
+    if (yr) yr.style.color = yearly ? "var(--text)" : "var(--dim)";
+    document.querySelectorAll<HTMLElement>("[data-team-price]").forEach((el) => {
+      el.textContent = `$${teamPrice(yearly)}`;
+    });
+    paintEstimate();
+  }
+  toggle?.addEventListener("click", () => {
+    yearly = !yearly;
+    paintBilling();
+  });
+  $("#label-monthly")?.addEventListener("click", () => {
+    yearly = false;
+    paintBilling();
+  });
+  $("#label-yearly")?.addEventListener("click", () => {
+    yearly = true;
+    paintBilling();
+  });
+  seats?.addEventListener("input", paintEstimate);
+  paintBilling();
+</script>
