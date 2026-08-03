@@ -230,4 +230,20 @@ input::placeholder {
   .section {
     padding: 56px 24px;
   }
+  .hero-h1 {
+    font-size: 40px !important;
+  }
+}
+
+/* Mobile nav: drop the anchor links + version, keep logo + CTA (single-page
+   landing — the CTA is the action; anchors are reachable by scrolling). */
+@media (max-width: 760px) {
+  .nav-links,
+  .nav-version {
+    display: none !important;
+  }
+  nav {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
 }
