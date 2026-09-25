@@ -1,4 +1,4 @@
 # Allow the Nathan AI Solutions site to embed this demo in an iframe.
 # Interim (workers.dev era); tighten to the real domain at cutover.
 /*
-  Content-Security-Policy: frame-ancestors 'self' https://*.workers.dev https://*.nathanaisolutions.com
+  Content-Security-Policy: frame-ancestors 'self' https://*.workers.dev https://nathanaisolutions.com https://*.nathanaisolutions.com
